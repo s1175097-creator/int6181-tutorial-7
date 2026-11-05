@@ -1,0 +1,41 @@
+# INT6181 Tutorial 7 - Continuous Integration (CI)
+#
+# This build script tells GitHub Actions how to build the project and run its
+# self-testing steps. Following the general tasks of a CI build script:
+#   1. Set up the programming environment  -> "Set Up Python"
+#   2. Clone the code of the latest commit -> "CheckOut Your Code"
+#   3. Set up the dependencies (if any)    -> (standard library only, so none)
+#   4. Run the tests                       -> "Run teacher tests"
+#   5. Report the test results             -> the job's pass/fail status
+
+name: Run Test
+
+# Triggered automatically for every Pull Request, so a broken branch can never
+# be merged unnoticed. Pushes to main and manual runs are also allowed.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# The job only needs to read the repository.
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: CheckOut Your Code
+        uses: actions/checkout@v5
+
+      - name: Set Up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      # unittest exits with a non-zero status code when any test fails, which
+      # is what turns the check red and blocks the pull request.
+      - name: Run teacher tests
+        run: python -m unittest discover -s . -p "test_*.py" -v
