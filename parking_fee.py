@@ -1,6 +1,7 @@
 import math
 
 
+# CI check: unit tests run automatically on every pull request.
 class ParkingFeeCalculator:
     HOURLY_RATE = 10.0
     DAILY_MAX = 80.0
